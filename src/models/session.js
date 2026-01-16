@@ -1,3 +1,4 @@
+
 import { Schema, model } from 'mongoose';
 
 const sessionSchema = new Schema(
@@ -23,11 +24,6 @@ const sessionSchema = new Schema(
       type: Date,
       required: true,
     },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
-  },
-);
+
 
 export const Session = model('Session', sessionSchema);
