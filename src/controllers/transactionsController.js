@@ -1,3 +1,8 @@
+
+import {
+  updateTransactionById,
+  deleteTransactionById,
+} from '../services/transaction.js';
 import createHttpError from 'http-errors';
 import { Transaction } from '../models/transaction.js';
 import { Category } from '../models/category.js';
@@ -34,3 +39,33 @@ export const getAllTransactions = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateTransaction = async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const userId = req.user._id;
+
+    const updated = await updateTransactionById(
+      transactionId,
+      userId,
+      req.body,
+    );
+
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(err.status || 500).json({ error: err.message });
+  }
+};
+
+export const deleteTransaction = async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const userId = req.user._id;
+
+    await deleteTransactionById(transactionId, userId);
+
+    res.status(204).send();
+  } catch (err) {
+    console.error(err);
+    res.status(err.status || 500).json({ error: err.message });
