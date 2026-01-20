@@ -1,17 +1,24 @@
 import { Category } from '../models/category.js';
 
-export const getCategories = async (req, res) => {
-  const { type = 'expense' } = req.query;
-
+export const getCategories = async (req, res, next) => {
   try {
-    const categoriesQuery = Category.find({ type })
-      .sort({ _id: 1 })
-      .select('name');
+    // Отримати всі категорії
+    const categories = await Category.find().sort({ _id: 1 });
 
-    const categories = await categoriesQuery;
+    // Розділити на доходи та витрати
+    const incomeCategories = categories
+      .filter((cat) => cat.type === 'income')
+      .map((cat) => cat.name);
 
-    res.status(200).json({ categories });
+    const expenseCategories = categories
+      .filter((cat) => cat.type === 'expense')
+      .map((cat) => cat.name);
+
+    res.status(200).json({
+      incomes: incomeCategories,
+      expenses: expenseCategories,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    next(error);
   }
 };
