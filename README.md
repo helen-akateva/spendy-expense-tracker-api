@@ -6,7 +6,6 @@ REST API for tracking personal income and expenses with categorization, monthly 
 
 - **API Base URL**: https://spendy-expence-tracker-api.onrender.com
 - **Swagger Documentation**: https://spendy-expence-tracker-api.onrender.com/api-docs
-- **Swagger JSON**: https://spendy-expence-tracker-api.onrender.com/api-docs.json
 
 ## 📖 About
 
