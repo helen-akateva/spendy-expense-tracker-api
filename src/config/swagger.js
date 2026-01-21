@@ -1,4 +1,4 @@
-// src/config/swagger.js  (или просто src/swagger.js)
+// src/config/swagger.js
 
 import swaggerJsdoc from 'swagger-jsdoc';
 
@@ -6,23 +6,99 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Spendy | Finance Tracker API',
+      title: 'Finance Tracker API',
       version: '1.0.0',
-      description: 'Expense and income tracker',
+      description:
+        'REST API for tracking personal income and expenses, categories, monthly summaries, and user management.',
     },
     servers: [
       {
         url: 'http://localhost:3000',
-        description: 'Локальная разработка',
+        description: 'Local development server',
+      },
+      // Раскомментируй при деплое
+      // {
+      //   url: 'https://api.your-domain.com',
+      //   description: 'Production server',
+      // },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'JWT Authorization header. Format: "Bearer {token}"',
+        },
+      },
+      responses: {
+        UnauthorizedError: {
+          description: 'Access token is missing or invalid',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'Unauthorized - invalid or missing token',
+                  },
+                },
+              },
+            },
+          },
+        },
+        ValidationError: {
+          description: 'Input validation failed',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'Invalid input data',
+                  },
+                  details: {
+                    type: 'array',
+                    items: { type: 'string' },
+                    example: ['"email" must be a valid email address'],
+                  },
+                },
+              },
+            },
+          },
+        },
+        InternalServerError: {
+          description: 'Internal server error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'Internal server error',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    // Глобальная авторизация для всех защищённых эндпоинтов
+    // (можно переопределить в конкретных роутах, поставив security: [])
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
-  // Пути, где Swagger ищет JSDoc-комментарии с @swagger
   apis: [
-    './src/routes/*.js', // все файлы роутов
-    './src/controllers/*.js', // если документация в контроллерах
-    // При необходимости добавь другие папки, например:
-    // './src/middlewares/*.js',
+    './src/routes/*.js', // Основные роуты — здесь вся документация
+    './src/controllers/*.js', // Если часть описаний в контроллерах
+    // './src/models/*.js',       // Опционально — для схем моделей
   ],
 };
 

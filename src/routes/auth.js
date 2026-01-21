@@ -17,14 +17,14 @@ const router = Router();
  * @swagger
  * tags:
  *   name: Auth
- *   description: Аутентификация и управление сессиями пользователей
+ *   description: User authentication endpoints (registration, login, token refresh, logout)
  */
 
 /**
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Регистрация нового пользователя
+ *     summary: Register a new user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -33,29 +33,32 @@ const router = Router();
  *           schema:
  *             type: object
  *             required:
- *               - username
+ *               - name
  *               - email
  *               - password
  *             properties:
- *               username:
+ *               name:
  *                 type: string
  *                 minLength: 2
  *                 maxLength: 32
- *                 example: "artem123"
+ *                 example: "Test User"
+ *                 description: User's display name
  *               email:
  *                 type: string
  *                 format: email
  *                 maxLength: 64
- *                 example: "artem@example.com"
+ *                 example: "user@example.com"
+ *                 description: Unique email address
  *               password:
  *                 type: string
  *                 minLength: 8
  *                 maxLength: 64
  *                 format: password
- *                 example: "StrongPass123"
+ *                 example: "Password123!"
+ *                 description: User's password (will be hashed)
  *     responses:
  *       201:
- *         description: Пользователь успешно зарегистрирован
+ *         description: User successfully registered
  *         content:
  *           application/json:
  *             schema:
@@ -63,22 +66,41 @@ const router = Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Пользователь создан"
+ *                   example: "User created successfully"
  *                 user:
  *                   type: object
  *                   properties:
  *                     id:
  *                       type: string
- *                     username:
+ *                       example: "507f1f77bcf86cd799439011"
+ *                     name:
  *                       type: string
+ *                       example: "Test User"
  *                     email:
  *                       type: string
+ *                       example: "user@example.com"
  *       400:
- *         description: Ошибка валидации данных
+ *         description: Validation error (missing or invalid fields)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Name is required"
  *       409:
- *         description: Пользователь с таким email уже существует
+ *         description: Conflict - email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Email is already registered"
  *       500:
- *         description: Ошибка сервера
+ *         description: Internal server error
  */
 router.post('/register', celebrate(registerUserSchema), registerUser);
 
@@ -86,7 +108,7 @@ router.post('/register', celebrate(registerUserSchema), registerUser);
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Вход пользователя
+ *     summary: Login user and return tokens
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -101,14 +123,14 @@ router.post('/register', celebrate(registerUserSchema), registerUser);
  *               email:
  *                 type: string
  *                 format: email
- *                 example: "artem@example.com"
+ *                 example: "user@example.com"
  *               password:
  *                 type: string
  *                 format: password
- *                 example: "StrongPass123"
+ *                 example: "Password123!"
  *     responses:
  *       200:
- *         description: Успешный вход
+ *         description: Successful login
  *         content:
  *           application/json:
  *             schema:
@@ -116,62 +138,25 @@ router.post('/register', celebrate(registerUserSchema), registerUser);
  *               properties:
  *                 accessToken:
  *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *                 refreshToken:
  *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *                 user:
  *                   type: object
  *                   properties:
  *                     id:
  *                       type: string
- *                     username:
+ *                     name:
  *                       type: string
+ *                       example: "Test User"
  *                     email:
  *                       type: string
- *       401:
- *         description: Неверные учетные данные
+ *                       example: "user@example.com"
  *       400:
- *         description: Ошибка валидации
- *       500:
- *         description: Ошибка сервера
- */
-router.post('/login', celebrate(loginUserSchema), loginUser);
-
-/**
- * @swagger
- * /auth/refresh:
- *   post:
- *     summary: Обновление access-токена с помощью refresh-токена
- *     tags: [Auth]
- *     responses:
- *       200:
- *         description: Токены успешно обновлены
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                 refreshToken:
- *                   type: string
+ *         description: Validation error
  *       401:
- *         description: Недействительный или просроченный refresh-токен
- *       500:
- *         description: Ошибка сервера
- */
-router.post('/refresh', refreshUserSession);
-
-/**
- * @swagger
- * /auth/logout:
- *   post:
- *     summary: Выход пользователя (инвалидация сессии)
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Успешный выход
+ *         description: Invalid credentials
  *         content:
  *           application/json:
  *             schema:
@@ -179,11 +164,60 @@ router.post('/refresh', refreshUserSession);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Выход выполнен"
- *       401:
- *         description: Не авторизован / недействительный токен
+ *                   example: "Invalid email or password"
  *       500:
- *         description: Ошибка сервера
+ *         description: Internal server error
+ */
+router.post('/login', celebrate(loginUserSchema), loginUser);
+
+/**
+ * @swagger
+ * /auth/refresh:
+ *   post:
+ *     summary: Refresh access token using refresh token
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Tokens successfully refreshed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                 refreshToken:
+ *                   type: string
+ *       401:
+ *         description: Invalid or expired refresh token
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/refresh', refreshUserSession);
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout user (invalidate current session)
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully logged out
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Logged out successfully"
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ *       500:
+ *         description: Internal server error
  */
 router.post('/logout', logoutUser);
 
