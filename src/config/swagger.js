@@ -16,11 +16,11 @@ const options = {
         url: 'http://localhost:3000',
         description: 'Local development server',
       },
-      // Раскомментируй при деплое
-      // {
-      //   url: 'https://api.your-domain.com',
-      //   description: 'Production server',
-      // },
+
+      {
+        url: 'https://spendy-expence-tracker-api.onrender.com',
+        description: 'Production server',
+      },
     ],
     components: {
       securitySchemes: {
