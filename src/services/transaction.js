@@ -2,7 +2,7 @@ import { Transaction } from '../models/transaction.js';
 import { Category } from '../models/category.js';
 
 // Функція валідації
-const validateTransactionCategoryMatch = async (type, categoryId) => {
+export const validateTransactionCategoryMatch = async (type, categoryId) => {
   const category = await Category.findById(categoryId);
 
   if (!category) {

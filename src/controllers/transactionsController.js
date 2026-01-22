@@ -5,39 +5,22 @@ import {
   deleteTransactionById,
   updateTransactionById,
 } from '../services/transaction.js';
+import { validateTransactionCategoryMatch } from '../services/transaction.js';
 
 export const createTransaction = async (req, res, next) => {
   try {
-    const { type, category: categoryName, amount, date, comment } = req.body;
+    const { type, category: categoryId, amount, date, comment } = req.body;
 
-    // Знайти категорію за ім'ям
-    const categoryDoc = await Category.findOne({ name: categoryName });
-    if (!categoryDoc) {
-      throw createHttpError(400, 'Невірна категорія');
-    }
+    await validateTransactionCategoryMatch(type, categoryId);
 
-    // Валідація відповідності типу транзакції і типу категорії
-    if (type !== categoryDoc.type) {
-      throw createHttpError(
-        400,
-        `Категорія "${categoryName}" не може використовуватись для ${type === 'income' ? 'доходів' : 'витрат'}`,
-      );
-    }
-
-    // Створити транзакцію
-    const transactionData = {
+    const transaction = await Transaction.create({
       type,
-      category: categoryDoc._id,
+      category: categoryId,
       amount,
       date,
+      comment: comment?.trim(),
       userId: req.user._id,
-    };
-
-    if (comment && comment.trim()) {
-      transactionData.comment = comment.trim();
-    }
-
-    const transaction = await Transaction.create(transactionData);
+    });
 
     const populatedTransaction = await Transaction.findById(
       transaction._id,
