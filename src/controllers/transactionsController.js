@@ -53,53 +53,45 @@ export const getAllTransactions = async (req, res, next) => {
     next(error);
   }
 };
-
 export const updateTransaction = async (req, res, next) => {
   try {
     const { transactionId } = req.params;
     const userId = req.user._id;
-
-    // стара транзакція
-    const oldTransaction = await Transaction.findOne({
-      _id: transactionId,
-      userId,
-    });
-
-    if (!oldTransaction) {
-      return res.status(404).json({ message: 'Транзакцію не знайдено' });
-    }
 
     const { categoryId, ...rest } = req.body;
 
     const updateData = { ...rest };
     if (categoryId) updateData.category = categoryId;
 
-    const updated = await updateTransactionById(
+    const { oldTransaction, updatedTransaction } = await updateTransactionById(
       transactionId,
       userId,
       updateData,
     );
 
-    // 🔥 ПЕРЕРАХУНОК БАЛАНСУ
+    // баланс ДО
     const oldValue =
       oldTransaction.type === 'income'
         ? oldTransaction.amount
         : -oldTransaction.amount;
 
+    // баланс ПІСЛЯ
     const newValue =
-      updated.type === 'income' ? updated.amount : -updated.amount;
+      updatedTransaction.type === 'income'
+        ? updatedTransaction.amount
+        : -updatedTransaction.amount;
 
-    const diff = newValue - oldValue;
-
+    // різниця
     await User.findByIdAndUpdate(userId, {
-      $inc: { balance: diff },
+      $inc: { balance: newValue - oldValue },
     });
 
-    res.json(updated);
+    res.json(updatedTransaction);
   } catch (err) {
     next(err);
   }
 };
+
 export const deleteTransaction = async (req, res, next) => {
   try {
     const { transactionId } = req.params;

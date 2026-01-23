@@ -28,16 +28,13 @@ export const validateTransactionCategoryMatch = async (type, categoryId) => {
 
   return category;
 };
-
-// Оновити транзакцію
 export const updateTransactionById = async (transactionId, userId, data) => {
-  // 1. Шукаємо транзакцію користувача
-  const existing = await Transaction.findOne({
+  const oldTransaction = await Transaction.findOne({
     _id: transactionId,
     userId,
-  });
+  }).populate('category');
 
-  if (!existing) {
+  if (!oldTransaction) {
     const error = new Error(
       'Транзакцію не знайдено або вона не належить користувачу',
     );
@@ -45,25 +42,20 @@ export const updateTransactionById = async (transactionId, userId, data) => {
     throw error;
   }
 
-  // 2. Якщо оновлюється type або categoryId — перевіряємо відповідність
-  if (data.type || data.categoryId) {
-    const typeToCheck = data.type ?? existing.type;
-    const categoryIdToCheck = data.categoryId ?? existing.category;
+  if (data.type || data.category) {
+    const typeToCheck = data.type || oldTransaction.type;
+    const categoryToCheck = data.category || oldTransaction.category._id;
 
-    await validateTransactionCategoryMatch(typeToCheck, categoryIdToCheck);
+    await validateTransactionCategoryMatch(typeToCheck, categoryToCheck);
   }
 
-  // 3. Оновлюємо транзакцію
-  const updated = await Transaction.findOneAndUpdate(
+  const updatedTransaction = await Transaction.findOneAndUpdate(
     { _id: transactionId, userId },
     data,
-    {
-      new: true,
-      runValidators: true,
-    },
-  ).populate('category', 'name type');
+    { new: true, runValidators: true },
+  ).populate('category');
 
-  return updated;
+  return { oldTransaction, updatedTransaction };
 };
 
 // Видалити транзакцію
