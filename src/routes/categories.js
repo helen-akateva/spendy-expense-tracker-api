@@ -28,24 +28,33 @@ const categoriesRoutes = Router();
  *                 incomes:
  *                   type: array
  *                   items:
- *                     type: string
- *                   example:
- *                     - "Incomes"
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         description: MongoDB ObjectId of the category
+ *                         example: "6969fa24a24573a2ab69c339"
+ *                       name:
+ *                         type: string
+ *                         example: "Incomes"
+ *                       type:
+ *                         type: string
+ *                         example: "income"
  *                 expenses:
  *                   type: array
  *                   items:
- *                     type: string
- *                   example:
- *                     - "Main expenses"
- *                     - "Products"
- *                     - "Car"
- *                     - "Self care"
- *                     - "Child care"
- *                     - "Household products"
- *                     - "Education"
- *                     - "Leisure"
- *                     - "Other expenses"
- *                     - "Entertainment"
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         description: MongoDB ObjectId of the category
+ *                         example: "6969fa24a24573a2ab69c33a"
+ *                       name:
+ *                         type: string
+ *                         example: "Products"
+ *                       type:
+ *                         type: string
+ *                         example: "expense"
  *       500:
  *         description: Internal server error
  *         content:
