@@ -14,16 +14,23 @@ export const getCurrentUser = async (req, res, next) => {
 
 // Helper function to automatically recalculate balance
 export const autoRecalculateBalance = async (userId) => {
+  console.log('🔄 autoRecalculateBalance called for userId:', userId);
+  
   const transactions = await Transaction.find({ userId });
+  console.log('📊 Found transactions:', transactions.length);
 
   let balance = 0;
   for (const transaction of transactions) {
     if (transaction.type === 'income') {
       balance += transaction.amount;
+      console.log(`  ✅ Income: +${transaction.amount}, balance: ${balance}`);
     } else {
       balance -= transaction.amount;
+      console.log(`  ❌ Expense: -${transaction.amount}, balance: ${balance}`);
     }
   }
+
+  console.log('💰 Calculated balance:', balance);
 
   const updatedUser = await User.findByIdAndUpdate(
     userId,
@@ -32,9 +39,11 @@ export const autoRecalculateBalance = async (userId) => {
   );
 
   if (!updatedUser) {
+    console.error('❌ User not found during balance update');
     throw new Error('User not found during balance update');
   }
 
+  console.log('✅ Balance updated successfully to:', updatedUser.balance);
   return balance;
 };
 
