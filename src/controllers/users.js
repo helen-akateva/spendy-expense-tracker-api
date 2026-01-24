@@ -25,7 +25,16 @@ export const autoRecalculateBalance = async (userId) => {
     }
   }
 
-  await User.findByIdAndUpdate(userId, { balance });
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { balance },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedUser) {
+    throw new Error('User not found during balance update');
+  }
+
   return balance;
 };
 
