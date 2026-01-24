@@ -63,11 +63,22 @@ export const updateTransaction = async (req, res, next) => {
     const updateData = { ...rest };
     if (categoryId) updateData.category = categoryId;
 
+    console.log('🔍 UPDATE REQUEST:', { transactionId, updateData });
+
     const { oldTransaction, updatedTransaction } = await updateTransactionById(
       transactionId,
       userId,
       updateData,
     );
+
+    console.log('📊 OLD TRANSACTION:', {
+      type: oldTransaction.type,
+      amount: oldTransaction.amount,
+    });
+    console.log('📊 NEW TRANSACTION:', {
+      type: updatedTransaction.type,
+      amount: updatedTransaction.amount,
+    });
 
     // баланс ДО
     const oldValue =
@@ -82,12 +93,24 @@ export const updateTransaction = async (req, res, next) => {
         : -updatedTransaction.amount;
 
     // різниця
-    await User.findByIdAndUpdate(userId, {
-      $inc: { balance: newValue - oldValue },
+    const balanceChange = newValue - oldValue;
+
+    console.log('💰 BALANCE CALCULATION:', {
+      oldValue,
+      newValue,
+      balanceChange,
+      userId: userId.toString(),
     });
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { balance: balanceChange },
+    });
+
+    console.log('✅ Balance updated successfully');
 
     res.json(updatedTransaction);
   } catch (err) {
+    console.error('❌ UPDATE ERROR:', err);
     next(err);
   }
 };
