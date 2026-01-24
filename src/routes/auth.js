@@ -174,8 +174,9 @@ router.post('/login', celebrate(loginUserSchema), loginUser);
  * @swagger
  * /auth/refresh:
  *   post:
- *     summary: Refresh access token using refresh token
+ *     summary: Refresh access token using refresh token from cookie
  *     tags: [Auth]
+ *     description: Refreshes the access token using the refresh token stored in cookies
  *     responses:
  *       200:
  *         description: Tokens successfully refreshed
@@ -186,8 +187,10 @@ router.post('/login', celebrate(loginUserSchema), loginUser);
  *               properties:
  *                 accessToken:
  *                   type: string
+ *                   description: New access token (also set in cookie)
  *                 refreshToken:
  *                   type: string
+ *                   description: New refresh token (also set in cookie)
  *       401:
  *         description: Invalid or expired refresh token
  *       500:
