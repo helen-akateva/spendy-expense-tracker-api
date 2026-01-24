@@ -32,7 +32,7 @@ const router = Router();
  *     summary: Create a new transaction
  *     tags: [Transactions]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -41,7 +41,7 @@ const router = Router();
  *             type: object
  *             required:
  *               - type
- *               - category
+ *               - categoryId
  *               - amount
  *               - date
  *             properties:
@@ -49,9 +49,10 @@ const router = Router();
  *                 type: string
  *                 enum: [income, expense]
  *                 example: "expense"
- *               category:
+ *               categoryId:
  *                 type: string
- *                 example: "Products"
+ *                 description: MongoDB ObjectId of the category
+ *                 example: "6969fa24a24573a2ab69c33a"
  *               amount:
  *                 type: number
  *                 minimum: 0.01
@@ -87,7 +88,7 @@ const router = Router();
  *                 comment:
  *                   type: string
  *       400:
- *         description: Validation error
+ *         description: Validation error or insufficient funds
  *       401:
  *         description: Unauthorized - invalid or missing token
  *       500:
@@ -107,7 +108,7 @@ router.post(
  *     summary: Get all user transactions
  *     tags: [Transactions]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -171,7 +172,7 @@ router.get(
  *     summary: Update an existing transaction
  *     tags: [Transactions]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: transactionId
@@ -190,9 +191,10 @@ router.get(
  *                 type: string
  *                 enum: [income, expense]
  *                 example: "expense"
- *               category:
+ *               categoryId:
  *                 type: string
- *                 example: "Car"
+ *                 description: MongoDB ObjectId of the category
+ *                 example: "6969fa24a24573a2ab69c33b"
  *               amount:
  *                 type: number
  *                 example: 450.00
@@ -223,7 +225,7 @@ router.get(
  *                 comment:
  *                   type: string
  *       400:
- *         description: Validation error or invalid data
+ *         description: Validation error, invalid data, or insufficient funds
  *       401:
  *         description: Unauthorized
  *       403:
@@ -247,7 +249,7 @@ router.patch(
  *     summary: Delete a transaction
  *     tags: [Transactions]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: transactionId

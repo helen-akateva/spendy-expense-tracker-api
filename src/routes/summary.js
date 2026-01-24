@@ -21,7 +21,7 @@ const router = Router();
  *     tags: [Summary]
  *     description: Returns total income, expenses by category, and overall totals for the specified month
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: period

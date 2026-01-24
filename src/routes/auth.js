@@ -202,7 +202,7 @@ router.post('/refresh', refreshUserSession);
  *     summary: Logout user (invalidate current session)
  *     tags: [Auth]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Successfully logged out

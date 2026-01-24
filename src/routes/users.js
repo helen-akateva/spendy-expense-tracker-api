@@ -18,7 +18,7 @@ const router = Router();
  *     summary: Get information about the currently authenticated user
  *     tags: [User]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     description: Returns profile data of the logged-in user (without sensitive fields like password)
  *     responses:
  *       200:
@@ -76,7 +76,7 @@ router.get('/current', authenticate, getCurrentUser);
  *     summary: Recalculate user balance from all transactions
  *     tags: [User]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     description: Recalculates the user's balance by summing all income and expense transactions. Useful for fixing incorrect balances.
  *     responses:
  *       200:
