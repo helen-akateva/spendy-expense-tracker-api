@@ -40,19 +40,3 @@ export const autoRecalculateBalance = async (userId) => {
 
   return balance;
 };
-
-export const recalculateBalance = async (req, res, next) => {
-  try {
-    const userId = req.user._id;
-
-    const balance = await autoRecalculateBalance(userId);
-
-    res.json({
-      message: 'Balance recalculated successfully',
-      balance,
-      transactionsCount: (await Transaction.find({ userId })).length,
-    });
-  } catch (error) {
-    next(error);
-  }
-};

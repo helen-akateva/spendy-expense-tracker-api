@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/authenticate.js';
-import { getCurrentUser, recalculateBalance } from '../controllers/users.js';
+import { getCurrentUser } from '../controllers/users.js';
 
 const router = Router();
 
@@ -69,37 +69,5 @@ const router = Router();
  */
 router.get('/current', authenticate, getCurrentUser);
 
-/**
- * @swagger
- * /recalculate-balance:
- *   post:
- *     summary: Recalculate user balance from all transactions
- *     tags: [User]
- *     security:
- *       - cookieAuth: []
- *     description: Recalculates the user's balance by summing all income and expense transactions. Useful for fixing incorrect balances.
- *     responses:
- *       200:
- *         description: Balance recalculated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Balance recalculated successfully"
- *                 balance:
- *                   type: number
- *                   example: 1250.75
- *                 transactionsCount:
- *                   type: number
- *                   example: 15
- *       401:
- *         description: Unauthorized - invalid or missing authentication token
- *       500:
- *         description: Internal server error
- */
-router.post('/recalculate-balance', authenticate, recalculateBalance);
-
 export default router;
+

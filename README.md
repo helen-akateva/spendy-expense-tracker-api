@@ -93,7 +93,6 @@ When testing the API using **Postman** or **Swagger UI**:
 ### User
 
 - `GET /users/current` — Get current authenticated user
-- `POST /users/recalculate-balance` — Manually recalculate user balance
 
 ### Categories
 
