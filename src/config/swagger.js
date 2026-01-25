@@ -13,11 +13,6 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Local development server',
-      },
-
-      {
         url: 'https://spendy-expence-tracker-api.onrender.com',
         description: 'Production server',
       },
@@ -28,7 +23,7 @@ const options = {
           type: 'apiKey',
           in: 'cookie',
           name: 'accessToken',
-          description: 'Session cookie for authentication. Automatically set after login.',
+          description: 'Authentication via HTTP-only cookie. After successful login or registration, the accessToken is automatically set in cookies. No manual authorization required when using Swagger UI in browser.',
         },
       },
       responses: {
@@ -87,12 +82,6 @@ const options = {
         },
       },
     },
-    // Global authentication for all protected endpoints
-    security: [
-      {
-        cookieAuth: [],
-      },
-    ],
   },
   apis: [
     './src/routes/*.js', // Основные роуты — здесь вся документация

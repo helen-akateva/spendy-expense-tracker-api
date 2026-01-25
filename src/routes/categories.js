@@ -16,6 +16,8 @@ const categoriesRoutes = Router();
  *   get:
  *     summary: Get list of available categories
  *     tags: [Categories]
+ *     security:
+ *       - cookieAuth: []
  *     description: Returns two arrays — income categories and expense categories
  *     responses:
  *       200:

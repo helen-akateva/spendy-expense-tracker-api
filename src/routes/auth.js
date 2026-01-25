@@ -26,6 +26,7 @@ const router = Router();
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -110,6 +111,7 @@ router.post('/register', celebrate(registerUserSchema), registerUser);
  *   post:
  *     summary: Login user and return tokens
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -130,7 +132,12 @@ router.post('/register', celebrate(registerUserSchema), registerUser);
  *                 example: "Password123!"
  *     responses:
  *       200:
- *         description: Successful login
+ *         description: Successful login. Tokens are automatically set in HTTP-only cookies.
+ *         headers:
+ *           Set-Cookie:
+ *             description: HTTP-only cookies containing accessToken, refreshToken, and sessionId
+ *             schema:
+ *               type: string
  *         content:
  *           application/json:
  *             schema:
@@ -176,6 +183,7 @@ router.post('/login', celebrate(loginUserSchema), loginUser);
  *   post:
  *     summary: Refresh access token using refresh token from cookie
  *     tags: [Auth]
+ *     security: []
  *     description: Refreshes the access token using the refresh token stored in cookies
  *     responses:
  *       200:
