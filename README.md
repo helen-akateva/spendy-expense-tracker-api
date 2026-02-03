@@ -13,10 +13,10 @@ REST API for tracking personal income and expenses with categorization, monthly 
 ## 🚀 Live Demo
 
 - **API Base URL:**
-  https://spendy-expense-tracker-api.onrender.com
+  https://spendy-expence-tracker-api.onrender.com
 
 - **Swagger Documentation:**
-  https://spendy-expense-tracker-api.onrender.com/api-docs
+  https://spendy-expence-tracker-api.onrender.com/api-docs
 
 > ⚠️ The project is deployed on Render free tier.
 > Cold start delays may occur after inactivity.
