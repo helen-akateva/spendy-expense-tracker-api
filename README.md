@@ -1,5 +1,11 @@
 # 💰 Spendy — Finance Tracker API
 
+![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?style=flat&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4.x-000000?style=flat&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=flat&logo=mongodb&logoColor=white)
+![License](https://img.shields.io/badge/License-Educational-blue?style=flat)
+![Deployment](https://img.shields.io/badge/Deployed-Render-46E3B7?style=flat&logo=render&logoColor=white)
+
 REST API for tracking personal income and expenses with categorization, monthly reports, and secure user authentication.
 
 ---
